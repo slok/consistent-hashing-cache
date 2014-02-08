@@ -7,8 +7,8 @@ class Node(object):
         self.key = key
         self._container = container
 
-    def get(key):
+    def get(self, key):
         self._container.get(key)
 
-    def add(key, data):
-        self._container.add(key, data)
+    def set(self, key, data):
+        self._container.set(key, data)

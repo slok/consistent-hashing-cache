@@ -2,6 +2,7 @@
 import unittest
 
 from ring import ConsistentRing
+from container import SimpleContainer
 
 class TestConsintentHashing(unittest.TestCase):
 
@@ -87,6 +88,22 @@ class TestConsintentHashing(unittest.TestCase):
         for i in range(1000):
             self.assertEqual(ring1.get(str(i)), ring2.get(str(i)))
 
+
+class TestSimpleContainer(unittest.TestCase):
+    def test_hashing_hit(self):
+        c = SimpleContainer()
+
+        test_data = {
+        "Batman": "Bruce Wayne",
+        "Spiderman": "Peter Parker",
+        "Superman": "Clark Ken",
+        }
+
+        for k, v in test_data.items():
+            c.set(k, v)
+
+        for k,v in test_data.items():
+            self.assertEqual(c.get(k), v)
 
 if __name__ == '__main__':
     unittest.main()

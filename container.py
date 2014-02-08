@@ -12,10 +12,10 @@ class SimpleContainer(Container):
     def __init__(self):
         self._data = {}
 
-    def set(key, data):
+    def set(self, key, data):
         self._data[key] = data
 
-    def get(key):
+    def get(self, key):
         """ Returns None if not key (miss), returns the data if found (hit)"""
         return self._data.get(key, None)
 
@@ -24,8 +24,8 @@ class LRUContainer(Container):
     def __init__(self):
         pass
 
-    def set(key, data):
+    def set(self, key, data):
         pass
 
-    def get(key):
+    def get(self, key):
         pass
