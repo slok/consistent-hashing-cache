@@ -1,7 +1,19 @@
 
 import settings
 
-class ConsistentRing(object):
+class Ring(object):
+
+    def add(self, *keys):
+        raise NotImplementedError
+
+    def remove(self, *keys):
+        raise NotImplementedError
+
+    def get(self, key):
+        raise NotImplementedError
+
+
+class ConsistentRing(Ring):
     """
         This class represents the ring of nodes managed with consistent hashing
         algorithm
@@ -36,7 +48,21 @@ class ConsistentRing(object):
         # Sort the list (We will use this technique in ConsistentRing.get)
         self._keys.sort()
 
-        
+    
+    def remove(self, *keys):
+        """ Remove keys(nodes) to the hash (ring)"""
+
+        for key in keys:
+            # for each node remove the replicas
+            for i in range(self._replicas):
+                # Calculate the hash of each replica
+                replica_hash = self._hash(bytearray("{0}{1}".format(i, key),
+                                                    "utf-8"))
+                # remove the replica hash from the ordered list
+                self._keys.remove(replica_hash)
+
+                del self._hash_map[replica_hash]
+
 
     def get(self, key):
         """ Gets the closest node near the provided key(string)"""

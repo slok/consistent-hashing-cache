@@ -1,7 +1,7 @@
 
 import unittest
 
-from consistenthashing import ConsistentRing
+from ring import ConsistentRing
 
 class TestConsintentHashing(unittest.TestCase):
 
@@ -9,7 +9,7 @@ class TestConsintentHashing(unittest.TestCase):
         #Simplify the hash function
         self.hash_function = lambda x: int(x)
 
-    def test_hashing(self):
+    def test_hashing_add(self):
         """Checks the hashing works ok"""
 
         node_keys = ("1", "3", "5") # will be: 1, 3, 5, 11, 13, 15, 21, 23, 25
@@ -33,6 +33,39 @@ class TestConsintentHashing(unittest.TestCase):
 
         # Add our nodes
         ring.add(*node_keys)
+
+        # Get the keys and check if it returns the proper node
+
+        for k,v in test_data.items():
+            self.assertEqual(ring.get(k), v)
+
+    def test_hashing_delete(self):
+        """Checks the hashing works ok"""
+
+        node_keys = ("1", "3", "5") # will be: 1, 3, 5, 11, 13, 15, 21, 23, 25
+        test_data = {
+            "0": "1",
+            "2": "5",
+            "5": "5",
+            "7": "1",
+            "11": "1",
+            "13": "5",
+            "14": "5",
+            "15": "5",
+            "16": "1",
+            "21": "1",
+            "22": "5",
+            "24": "5",
+        }
+
+        # Create a new ring, yay!
+        ring = ConsistentRing(self.hash_function, 3)
+
+        # Add our nodes
+        ring.add(*node_keys)
+
+        # Remove node 3
+        ring.remove("3")
 
         # Get the keys and check if it returns the proper node
 
