@@ -1,9 +1,12 @@
 
 class Container(object):
 
-    def set(key, data):
+    def set(self, key, data):
         raise NotImplementedError
-    def get(key):
+    def get(self, key):
+        raise NotImplementedError
+
+    def get_all(self, ):
         raise NotImplementedError
 
 
@@ -19,6 +22,9 @@ class SimpleContainer(Container):
         """ Returns None if not key (miss), returns the data if found (hit)"""
         return self._data.get(key, None)
 
+    def get_all(self):
+        return self._data
+
 class LRUContainer(Container):
     """LRU container"""
     def __init__(self):
@@ -28,4 +34,7 @@ class LRUContainer(Container):
         pass
 
     def get(self, key):
+        pass
+
+    def get_all(self):
         pass
