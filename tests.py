@@ -90,20 +90,33 @@ class TestConsintentHashing(unittest.TestCase):
 
 
 class TestSimpleContainer(unittest.TestCase):
+
+    def setUp(self):
+        self.test_data = {
+            "Batman": "Bruce Wayne",
+            "Spiderman": "Peter Parker",
+            "Superman": "Clark Ken",
+        }
+
     def test_hashing_hit(self):
         c = SimpleContainer()
 
-        test_data = {
-        "Batman": "Bruce Wayne",
-        "Spiderman": "Peter Parker",
-        "Superman": "Clark Ken",
-        }
-
-        for k, v in test_data.items():
+        for k, v in self.test_data.items():
             c.set(k, v)
 
-        for k,v in test_data.items():
+        for k,v in self.test_data.items():
             self.assertEqual(c.get(k), v)
+
+    def test_remove_data(self):
+        c = SimpleContainer()
+
+        for k, v in self.test_data.items():
+            c.set(k, v)
+
+        self.assertEqual(len(c.get_all()), len(self.test_data))
+        c.rm("Superman")
+        self.assertEqual(len(c.get_all()), len(self.test_data) - 1)
+
 
 if __name__ == '__main__':
     unittest.main()
