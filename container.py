@@ -21,11 +21,15 @@ class Container(object):
         raise NotImplementedError
 
 
+
 class SimpleContainer(Container):
     """Simple container is an abstraction of a regular dict"""
 
     def __init__(self):
         self._data = {}
+
+    def __len__(self):
+        return len(self._data)
 
     def set(self, key, data):
         self._data[key] = data
@@ -48,6 +52,9 @@ class LRUContainer(Container):
         self._linked_list = []
         self._data = {}
 
+    def __len__(self):
+        return len(self._linked_list)
+
     def set(self, key, data):
         # Insert at the front of the list
         self._linked_list.insert(0, key)        
@@ -58,7 +65,7 @@ class LRUContainer(Container):
             self._remove_oldest()
 
     def get(self, key):
-        if not len(self._linked_list):
+        if not len(self):
             return None
         else:
             data = self._data.get(key, None)
