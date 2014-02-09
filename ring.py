@@ -12,6 +12,9 @@ class Ring(object):
     def get(self, key):
         raise NotImplementedError
 
+    def empty(self, key):
+        raise NotImplementedError
+
 
 class ConsistentRing(Ring):
     """
@@ -27,6 +30,10 @@ class ConsistentRing(Ring):
         self._keys = [] # A sorted list of hash keys (the ring with the node positions)
         self._hash_map = {} # our ring data (hash/value where value will be the node destination)
         # Yeah we could use a sorted dict but using a list is faster for sorting
+
+
+    def __len__(self):
+        return len(self._keys)
 
     def add(self, *keys):
         """ Adds keys (nodes) to the hash (ring)"""
@@ -67,6 +74,9 @@ class ConsistentRing(Ring):
     def get(self, key):
         """ Gets the closest node near the provided key(string)"""
 
+        if self.empty():
+            return None
+
         key_hash = self._hash(bytearray(key, "utf-8"))
 
         # look over the ring to get the appropiate node where the key should be
@@ -77,3 +87,6 @@ class ConsistentRing(Ring):
         # This is a ring ;) this means we have return to the start point
     
         return self._hash_map[self._keys[0]]
+
+    def empty(self):
+        return len(self) == 0

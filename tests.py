@@ -88,6 +88,10 @@ class TestConsintentHashing(unittest.TestCase):
         for i in range(1000):
             self.assertEqual(ring1.get(str(i)), ring2.get(str(i)))
 
+    def test_empty(self):
+        ring = ConsistentRing()
+        self.assertIsNone(ring.get("something"))
+
 
 class TestSimpleContainer(unittest.TestCase):
 
