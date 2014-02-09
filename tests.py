@@ -2,7 +2,7 @@
 import unittest
 
 from ring import ConsistentRing
-from container import SimpleContainer
+from container import SimpleContainer, LRUContainer
 
 class TestConsintentHashing(unittest.TestCase):
 
@@ -116,6 +116,50 @@ class TestSimpleContainer(unittest.TestCase):
         self.assertEqual(len(c.get_all()), len(self.test_data))
         c.rm("Superman")
         self.assertEqual(len(c.get_all()), len(self.test_data) - 1)
+
+class TestLRUContainer(unittest.TestCase):
+
+    def setUp(self):
+        self.test_data = {
+            "Batman": "Bruce Wayne",
+            "Spiderman": "Peter Parker",
+            "Superman": "Clark Ken",
+            "Iron man": "Tony Stark",
+        }
+
+    def test_cache_max(self):
+        max_limit = 3
+        c = LRUContainer(max_limit)
+
+        for k, v in self.test_data.items():
+            c.set(k, v)
+
+        self.assertEqual(len(c.get_all()), max_limit)
+
+    def test_storing(self):
+        c = LRUContainer(4)
+
+        for k, v in self.test_data.items():
+            c.set(k, v)
+
+        for k,v in self.test_data.items():
+            self.assertEqual(c.get(k), v)
+
+    def test_hashing_hit(self):
+        c = LRUContainer(3)
+
+        c.set("Spiderman", self.test_data["Spiderman"])
+        c.set("Batman", self.test_data["Batman"])
+        c.set("Superman", self.test_data["Superman"])
+
+        # Hits
+        c.get("Batman")
+        c.get("Spiderman")
+
+        # superman should go out and not spiderman (First inser order)
+        c.set("Iron man", self.test_data["Iron man"])
+        self.assertIsNone(c.get("Superman"))
+
 
 
 if __name__ == '__main__':

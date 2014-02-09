@@ -39,19 +39,44 @@ class SimpleContainer(Container):
     def get_all(self):
         return self._data
 
+
 class LRUContainer(Container):
     """LRU container"""
-    def __init__(self):
-        pass
+
+    def __init__(self, max_entries):
+        self._max = max_entries
+        self._linked_list = []
+        self._data = {}
 
     def set(self, key, data):
-        pass
+        # Insert at the front of the list
+        self._linked_list.insert(0, key)        
+        self._data[key] = data
+
+        # Check if there is space left
+        if len(self._linked_list) > self._max:
+            self._remove_oldest()
 
     def get(self, key):
-        pass
+        if not len(self._linked_list):
+            return None
+        else:
+            data = self._data.get(key, None)
+            if data:
+                # hit, so data to front
+                self._linked_list.remove(key)
+                self._linked_list.insert(0, key)
+
+            return data
 
     def rm(self, key):
-        pass
+        self._linked_list.remove(key)
+        del self._data[key]
+
+    def _remove_oldest(self):
+        key = self._linked_list.pop()
+        del self._data[key]
 
     def get_all(self):
-        pass
+        return self._data
+
