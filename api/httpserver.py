@@ -4,7 +4,7 @@ import json
 
 from node import Node
 from ring import ConsistentRing
-import client
+import api.httpclient as client
 
 # The node containing container (our node container only) and the ring metadata
 node = None

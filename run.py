@@ -1,7 +1,6 @@
 import sys
 
-from server import NodeServer
-import client
+from api.httpserver import NodeServer
 
 
 if __name__ == "__main__":
