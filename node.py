@@ -42,3 +42,13 @@ class Node(object):
         # TODO: Check format
         return self._ring.remove(key)
 
+    def stats(self):
+        host, port = self.key.split(":") 
+        return {
+            "key": self.key,
+            "host": host,
+            "port": port,
+            "nodes": self._ring.stats(),
+            "data": self._container.get_all()
+        }
+

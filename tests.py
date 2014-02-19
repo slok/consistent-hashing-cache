@@ -92,6 +92,12 @@ class TestConsintentHashing(unittest.TestCase):
         ring = ConsistentRing()
         self.assertIsNone(ring.get("something"))
 
+    def test_stats(self):
+        ring = ConsistentRing()
+        node_keys = set(["127.0.0.1:8010", "127.0.0.1:8020", "127.0.0.1:8030"])
+        ring.add(*node_keys)
+        self.assertEqual(set(ring.stats()), node_keys)
+
 
 class TestSimpleContainer(unittest.TestCase):
 
@@ -120,6 +126,7 @@ class TestSimpleContainer(unittest.TestCase):
         self.assertEqual(len(c.get_all()), len(self.test_data))
         c.rm("Superman")
         self.assertEqual(len(c.get_all()), len(self.test_data) - 1)
+
 
 class TestLRUContainer(unittest.TestCase):
 
@@ -163,6 +170,21 @@ class TestLRUContainer(unittest.TestCase):
         # superman should go out and not spiderman (First inser order)
         c.set("Iron man", self.test_data["Iron man"])
         self.assertIsNone(c.get("Superman"))
+
+
+    def test_get_all(self):
+        self.test_data = {
+            "Batman": "Bruce Wayne",
+            "Spiderman": "Peter Parker",
+            "Superman": "Clark Ken",
+        }
+
+        c = LRUContainer(3)
+
+        for k, v in self.test_data.items():
+            c.set(k, v)
+
+        self.assertEqual(c.get_all(), self.test_data)
 
 
 

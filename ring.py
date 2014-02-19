@@ -15,6 +15,8 @@ class Ring(object):
     def empty(self, key):
         raise NotImplementedError
 
+    def stats(self):
+        raise NotImplementedError
 
 class ConsistentRing(Ring):
     """
@@ -90,3 +92,6 @@ class ConsistentRing(Ring):
 
     def empty(self):
         return len(self) == 0
+
+    def stats(self):
+        return list(set(v for k, v in self._hash_map.items()))
