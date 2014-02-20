@@ -104,16 +104,25 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                 response = "-99 Wrong parameters"
             else:
                 # TODO: Check key
-                self._add_data(data[1], data[2])
-                response = "{0} {1}".format(ADD["response_ok"], "Added data")
+                try:
+                    self._add_data(data[1], data[2])
+                    response = "{0} {1}".format(ADD["response_ok"], "Added data")
+                except ConnectionRefusedError:
+                    response = "{0} {1}".format(ADD["response_err"], "Connection error")
 
         elif command == GET["cmd"]:
             if len(data)-1 < GET["args"]:
                 response = "-99 Wrong parameters"
             else:
                 # TODO: Check key
-                res_data = self._get_data(data[1])
-                response = "{0} {1}".format(GET["response_ok"], res_data)
+                try:
+                    res_data = self._get_data(data[1])
+                    if not res_data:
+                        response = "{0} {1}".format(GET["response_err"], "Missed data")
+                    else:
+                        response = "{0} {1}".format(GET["response_ok"], res_data)
+                except ConnectionRefusedError:
+                    response = "{0} {1}".format(GET["response_err"], "Connection error")
 
         elif command == STATS["cmd"]:
             if len(data)-1 < STATS["args"]:
