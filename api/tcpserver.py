@@ -2,6 +2,7 @@ import socket
 import socketserver
 import threading
 import json
+import re
 
 from node import Node
 from ring import ConsistentRing
@@ -49,6 +50,8 @@ ERROR = {
     "response_err": -99,
 }
 
+key_regex = re.compile("\d\.\d\.\d\.\d:\d")
+
 class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
@@ -87,23 +90,26 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
             if len(data)-1 < ADD_NODE["args"]:
                 response = "-99 Wrong parameters"
             else:
-                # TODO: Check key
-                self._add_node(data[1])
-                response = "{0} {1}".format(ADD_NODE["response_ok"], "Added node")
+                if key_regex.search(data[1]):
+                    self._add_node(data[1])
+                    response = "{0} {1}".format(ADD_NODE["response_ok"], "Added node")
+                else:
+                    response = "{0} {1}".format(ADD_NODE["response_err"], "bad argument")
 
         elif command == RM_NODE["cmd"]:
             if len(data)-1 < RM_NODE["args"]:
                 response = "-99 Wrong parameters"
             else:
-                # TODO: Check key
-                self._rm_node(data[1])
-                response = "{0} {1}".format(RM_NODE["response_ok"], "removed node")
+                if key_regex.search(data[1]):
+                    self._rm_node(data[1])
+                    response = "{0} {1}".format(RM_NODE["response_ok"], "removed node")
+                else:
+                    response = "{0} {1}".format(RM_NODE["response_err"], "bad argument")
 
         elif command == ADD["cmd"]:
             if len(data)-1 < ADD["args"]:
                 response = "-99 Wrong parameters"
             else:
-                # TODO: Check key
                 try:
                     self._add_data(data[1], data[2])
                     response = "{0} {1}".format(ADD["response_ok"], "Added data")
@@ -114,7 +120,6 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
             if len(data)-1 < GET["args"]:
                 response = "-99 Wrong parameters"
             else:
-                # TODO: Check key
                 try:
                     res_data = self._get_data(data[1])
                     if not res_data:
